@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SparkAdv" basedir="." default="jar">
+    <property name="src.dir" value="src"/>
+    <property name="classes.dir" value="classes"/>
+     <property environment="env"/>
+
+    <path id ="spark-classpath">
+        <fileset dir="/usr/local/spark/lib">
+                <include name="spark-assembly-1.6.0-hadoop2.2.0.jar"/>
+        </fileset>
+        <fileset dir="${env.HADOOP_HOME}/share/hadoop/">
+            <include name="common/*.jar"/>
+            <include name="common/lib/*.jar"/>
+            <include name="mapreduce/*.jar"/>
+            <include name="mapreduce/lib/*.jar"/>
+        </fileset>
+
+    </path>
+	
+    <target name="clean" description="Delete all generated files">
+        <delete dir="${classes.dir}" failonerror="false"/>
+        <delete file="${ant.project.name}.jar"/>
+    </target>
+    <target name="compile" description="Compiles the Task">
+        <mkdir dir="${classes.dir}"/>
+        <javac includeantruntime="false"  target= "1.8"  srcdir="${src.dir}"
+        destdir="${classes.dir}"
+        classpathref ="spark-classpath"
+        />
+    </target>
+
+    <target name="jar" description="JARs the Task" depends = "compile">
+        <jar destfile="${ant.project.name}.jar" basedir="${classes.dir}"/>
+    </target>
+	
+	<path id ="spark-ucpu-classpath">
+		 <fileset dir="/labcommon/comp5338/usr/spark-1.2.0-bin-hadoop2.4/lib/">
+		                <include name="spark-assembly-1.2.0-hadoop2.4.0.jar"/>
+		        </fileset>
+	</path>
+	
+    <target name="compile-ucpu" description="Compiles the Task">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}"
+        destdir="${classes.dir}"
+        classpathref ="spark-ucpu-classpath"
+        />
+    </target>
+	<target name="local" description="create a jar for ucpu1 family" depends = "compile-ucpu">
+		<jar destfile="${ant.project.name}.jar" basedir="${classes.dir}" />
+	</target>
+	
+</project>
+    
